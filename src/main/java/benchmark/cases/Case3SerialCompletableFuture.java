@@ -1,23 +1,24 @@
 package benchmark.cases;
 
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-
 import benchmark.BenchmarkUtils;
 import benchmark.SleepTask;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class Case3SerialCompletableFuture {
 
 	public static void main(String[] args) {
 		List<SleepTask> tasks = BenchmarkUtils.generateTasks();
+		System.out.printf("[Case3 - SerialCompletableFuture] Processed %d tasks in %d millis%n", BenchmarkUtils.TEST_LIMIT, process(tasks));
+	}
 
+	public static long process(List<SleepTask> tasks) {
 		long start = System.currentTimeMillis();
 
 		tasks.stream()
-			.map(t -> CompletableFuture.runAsync(() -> t.sleep()))
-			.forEach(CompletableFuture::join);
+				.map(t -> CompletableFuture.runAsync(t::sleep))
+				.forEach(CompletableFuture::join);
 
-		long duration = (System.currentTimeMillis() - start);
-		System.out.printf("Processed %d tasks in %d millis\n", BenchmarkUtils.TEST_LIMIT, duration);
+		return (System.currentTimeMillis() - start);
 	}
 }
